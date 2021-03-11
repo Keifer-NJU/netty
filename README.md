@@ -33,7 +33,7 @@
 
 ### 2.Architectural Overview
 
-![The Architecture Diagram of Netty](.\assert\architecture.png)
+![The Architecture Diagram of Netty](https://github.com/Keifer-NJU/netty/blob/master/assert/architecture.png)
 
 1. **丰富的缓冲架构**（ Rich Buffer Data Structure）
 
@@ -129,13 +129,13 @@
 
 ### 3.核心类
 
-- #### EventLoop  & EventLoopGroup
+- #### **EventLoop  & EventLoopGroup**
 
   EventLoopGroup可以理解为线程池，EventLoop理解为一个线程，每个EventLoop对应一个Selector，负责处理多个Channel上的事件。
 
   这是Netty处理事件的核心机制。上面我使用了**EventLoopGroup**。我们在NIO中通常要做的几件事情，如注册感兴趣的事件、调度相应的Handler等，都是**EventLoop**负责。Channel、EventLoop、Thread以及EventLoopGroup 之间的关系可以用如下图表示：
 
-  ![img](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\1)
+  ![img](https://github.com/Keifer-NJU/netty/blob/master/assert/1)
 
   一个 EventLoopGroup 包含一个或多个 EventLoop ，即 EventLoopGroup : EventLoop = 1 : n 。
 
@@ -149,63 +149,63 @@
 
   当一个连接到达时，Netty 就会创建一个 Channel，然后从 EventLoopGroup 中分配一个 EventLoop 来给这个 Channel 绑定上，在该 Channel 的整个生命周期中都是有这个绑定的 EventLoop 来服务的。
 
-- #### NioEventLoopGroup
+- #### **NioEventLoopGroup**
 
   是一个处理I/O操作的多线程事件循环。Netty为不同类型的传输提供了各种EventLoopGroup实现。在本例中，我们将实现一个服务器端应用程序，因此将使用两个NioEventLoopGroup。第一个通常被称为“boss”，它接受一个传入的连接。第二个，通常称为“worker”，在“boss"接受连接并将接受的连接注册到worker之后，处理已接受连接的流量。使用多少线程以及如何将它们映射到创建的通道取决于EventLoopGroup实现，甚至可以通过构造函数进行配置。
 
-#### ServerBootstrap
+- #### **ServerBootstrap**
 
-是一个设置服务器的助手类。您可以直接使用 [`Channel`](https://netty.io/4.1/api/io/netty/channel/Channel.html) 设置服务器。但是，请注意，这是一个冗长的过程，在大多数情况下不需要这样做。
+  是一个设置服务器的助手类。您可以直接使用 [`Channel`](https://netty.io/4.1/api/io/netty/channel/Channel.html) 设置服务器。但是，请注意，这是一个冗长的过程，在大多数情况下不需要这样做。
 
-**ServerBootstrap**，**服务器端**程序的**入口**，这是Netty为简化网络程序配置和关闭等生命周期管理，所引入的Bootstrapping机制。我们通常要做的创建Channel、绑定端口、注册Handler等，都可以通过这个统一的入口，以**Fluent API**等形式完成，相对**简化了API使用**。与之相对应， **Bootstrap**则是**Client端**的通常入口。
+  **ServerBootstrap**，**服务器端**程序的**入口**，这是Netty为简化网络程序配置和关闭等生命周期管理，所引入的Bootstrapping机制。我们通常要做的创建Channel、绑定端口、注册Handler等，都可以通过这个统一的入口，以**Fluent API**等形式完成，相对**简化了API使用**。与之相对应， **Bootstrap**则是**Client端**的通常入口。
 
-![image.png](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\ae5c6ed3008d4323aaa817e9cb46437a.png)
+  ![image.png](https://github.com/Keifer-NJU/netty/blob/master/assert/ae5c6ed3008d4323aaa817e9cb46437a.png)
 
-#### Bootstrap
+- #### **Bootstrap**
 
-与ServerBootstrap类似，不同之处是它适用于非服务器通道，如客户端或无连接通道
+  与ServerBootstrap类似，不同之处是它适用于非服务器通道，如客户端或无连接通道
 
-#### Selector
+- #### **Selector**
 
-Netty基于java.nio.channels.Selector对象实现IO多路复用，通过Selector一个线程可以监听多个连接的Channel事件。当向一个Selector中注册Channel后，Selector内部的机制就可以自动不断的Select这些注册的Channel是否有就绪的IO事件（可读、可写、网络连接完成等）。
+  Netty基于java.nio.channels.Selector对象实现IO多路复用，通过Selector一个线程可以监听多个连接的Channel事件。当向一个Selector中注册Channel后，Selector内部的机制就可以自动不断的Select这些注册的Channel是否有就绪的IO事件（可读、可写、网络连接完成等）。
 
-#### Channel
+- #### **Channel**
 
-**channel**它代表一个到**实体**（如一个硬件设备、一个文件、一个网络套接字或者一个能够执行一个或者多个不同的I/O操作的程序组件）的开放连接，如读操作和写操作。目前，可以把**Channel** 看作是传入（入站）或者传出（出站）数据的载体。因此，它可以被打开或者被关闭，连接或者断开连接。其实Channel就对应着传统网络编程中的**Socket连接**。
+  **channel**它代表一个到**实体**（如一个硬件设备、一个文件、一个网络套接字或者一个能够执行一个或者多个不同的I/O操作的程序组件）的开放连接，如读操作和写操作。目前，可以把**Channel** 看作是传入（入站）或者传出（出站）数据的载体。因此，它可以被打开或者被关闭，连接或者断开连接。其实Channel就对应着传统网络编程中的**Socket连接**。
 
-Channel提供异步的网络IO操作，调用后立即返回ChannelFuture，通过注册监听，或者同步等待，最终获取结果。
+  Channel提供异步的网络IO操作，调用后立即返回ChannelFuture，通过注册监听，或者同步等待，最终获取结果。
 
-Channel根据不同的协议、不同的阻塞类型，分为不同的Channel类型：
+  Channel根据不同的协议、不同的阻塞类型，分为不同的Channel类型：
 
-![channel.png](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\45aedb41ab7f44c60a901d5a6a2a2472.jpg)
+  ![channel.png](https://github.com/Keifer-NJU/netty/blob/master/assert/45aedb41ab7f44c60a901d5a6a2a2472.jpg)
 
-#### ChannelPipeline 、 ChannelHandler、ChannelHandlerContext
+- #### **ChannelPipeline 、 ChannelHandler、ChannelHandlerContext**
 
-**ChannelHandler:** 这是应用开发者放置业务逻辑的主要地方，**Handler**主要的操作为**Channel缓存读**、**数据解码**、**业务处理**、**写Channel缓存**，然后由Channel（代表client）发送到最终的连接终端。
+  **ChannelHandler:** 这是应用开发者放置业务逻辑的主要地方，**Handler**主要的操作为**Channel缓存读**、**数据解码**、**业务处理**、**写Channel缓存**，然后由Channel（代表client）发送到最终的连接终端。
 
-**ChannelPipeline:** 它是ChannelHandler**链条的容器**，每个Channel在创建后，自动被分配一个**ChannelPipeline**。在上面的示例中，我们通过**ServerBootstrap**注册了ChannelInitializer，并且实现了initChannel方法，而在该方法中则承担了向ChannelPipleline安装其他Handler的任务。它在处理ChannelHandler时采用链式调用
+  **ChannelPipeline:** 它是ChannelHandler**链条的容器**，每个Channel在创建后，自动被分配一个**ChannelPipeline**。在上面的示例中，我们通过**ServerBootstrap**注册了ChannelInitializer，并且实现了initChannel方法，而在该方法中则承担了向ChannelPipleline安装其他Handler的任务。它在处理ChannelHandler时采用链式调用
 
-**每个Channel都有且只有一个ChannelPipeline与之对应。**
+  **每个Channel都有且只有一个ChannelPipeline与之对应。**
 
-Netty 的 Channel 过滤器实现原理与 Servlet Filter 机制一致，它将 Channel 的数据管道抽象为 ChannelPipeline，消息在 ChannelPipeline 中流动和传递。ChannelPipeline 持有 I/O 事件拦截器 ChannelHandler 的链表，由 ChannelHandler 对 I/O 事件进行拦截和处理，可以方便地通过新增和删除 ChannelHandler 来实现不同的业务逻辑定制，不需要对已有的 ChannelHandler 进行修改，能够实现对修改封闭和对扩展的支持。ChannelPipeline 是 ChannelHandler 的容器，它负责 ChannelHandler 的管理和事件拦截与调度
+  Netty 的 Channel 过滤器实现原理与 Servlet Filter 机制一致，它将 Channel 的数据管道抽象为 ChannelPipeline，消息在 ChannelPipeline 中流动和传递。ChannelPipeline 持有 I/O 事件拦截器 ChannelHandler 的链表，由 ChannelHandler 对 I/O 事件进行拦截和处理，可以方便地通过新增和删除 ChannelHandler 来实现不同的业务逻辑定制，不需要对已有的 ChannelHandler 进行修改，能够实现对修改封闭和对扩展的支持。ChannelPipeline 是 ChannelHandler 的容器，它负责 ChannelHandler 的管理和事件拦截与调度
 
-**ChannelHandlerContext：**保存Channel相关的所有上下文信息，同时关联一个ChannelHandler。允许ChannelHandler与它的ChannelPipeline和其他Handler交互。处理程序可以通知ChannelPipeline中的下一个ChannelHandler，也可以动态地修改它所属的ChannelPipeline。 
+  **ChannelHandlerContext：**保存Channel相关的所有上下文信息，同时关联一个ChannelHandler。允许ChannelHandler与它的ChannelPipeline和其他Handler交互。处理程序可以通知ChannelPipeline中的下一个ChannelHandler，也可以动态地修改它所属的ChannelPipeline。 
 
+  
 
+  **一个 Channel 包含了一个 ChannelPipeline，而 ChannelPipeline 中又维护了一个由 ChannelHandlerContext 组成的双向链表，并且每个 ChannelHandlerContext 中又关联着一个 ChannelHandler。**
 
-**一个 Channel 包含了一个 ChannelPipeline，而 ChannelPipeline 中又维护了一个由 ChannelHandlerContext 组成的双向链表，并且每个 ChannelHandlerContext 中又关联着一个 ChannelHandler。**
+  ![channelpipeline.jpg](https://github.com/Keifer-NJU/netty/blob/master/assert/060b6337573afd1d8ba11b8c73b0712b.jpg)
 
-![channelpipeline.jpg](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\060b6337573afd1d8ba11b8c73b0712b.jpg)
+- #### **ChannelInitializer**
 
-#### ChannelInitializer
+  这里指定的处理程序将始终由新接受的Channel进行计算。ChannelInitializer是一个特殊的处理程序，用于帮助用户配置新Channel。您很可能希望通过添加一些处理程序(如DiscardServerHandler)来配置新通道的ChannelPipeline来实现您的网络应用程序。随着应用程序变得复杂，很可能会向管道添加更多的处理程序，并最终将这个匿名类提取到顶级类中。
 
-这里指定的处理程序将始终由新接受的Channel进行计算。ChannelInitializer是一个特殊的处理程序，用于帮助用户配置新Channel。您很可能希望通过添加一些处理程序(如DiscardServerHandler)来配置新通道的ChannelPipeline来实现您的网络应用程序。随着应用程序变得复杂，很可能会向管道添加更多的处理程序，并最终将这个匿名类提取到顶级类中。
+- #### **[ChannelFuture](https://netty.io/4.1/api/index.html)**
 
-#### [ChannelFuture](https://netty.io/4.1/api/index.html)
+  Netty中的**所有I/O操作**都是异步的。这意味着任何I/O调用都会立即返回，但不能保证请求的I/O操作在调用结束时已经完成。相反，您将返回一个ChannelFuture实例，它为您提供有关I/O操作的结果或状态的信息。
 
-Netty中的**所有I/O操作**都是异步的。这意味着任何I/O调用都会立即返回，但不能保证请求的I/O操作在调用结束时已经完成。相反，您将返回一个ChannelFuture实例，它为您提供有关I/O操作的结果或状态的信息。
-
-ChannelFuture表示一个尚未发生的I/O操作。这意味着，任何请求的操作可能还没有被执行，因为在Netty中所有操作都是异步的。例如，以下代码可能会在消息发送之前关闭连接:
+  ChannelFuture表示一个尚未发生的I/O操作。这意味着，任何请求的操作可能还没有被执行，因为在Netty中所有操作都是异步的。例如，以下代码可能会在消息发送之前关闭连接:
 
 ```java
 Channel ch = ...;
@@ -213,7 +213,7 @@ ch.writeAndFlush(message);
 ch.close();
 ```
 
-因此，您需要在ChannelFuture完成后调用close()方法(该方法由write()方法返回)，并在写操作完成时通知它的侦听器。请注意，close()也可能不会立即关闭连接，它会返回一个ChannelFuture
+​	因此，您需要在ChannelFuture完成后调用close()方法(该方法由write()方法返回)，并在写操作完成时通知它的侦听器。请注意，		close()也可能不会立即关闭连接，它会返回一个ChannelFuture
 
 ```java
 final ChannelFuture f = ctx.writeAndFlush(time); // (3)
@@ -226,11 +226,11 @@ final ChannelFuture f = ctx.writeAndFlush(time); // (3)
         }); // (4)
 ```
 
-#### Future 
+- #### **Future** 
 
-在 Netty 中，所有的 I/O 操作都是异步的，这意味着任何 I/O 调用都会立即返回，而不是像传统 BIO 那样同步等待操作完成。异步操作会带来一个问题：调用者如何获取异步操作的结果？ChannelFuture 就是为了解决这个问题而专门设计的。下面我们一起看它的原理。ChannelFuture 有两种状态：uncompleted 和 completed。当开始一个 I/O 操作时，一个新的 ChannelFuture 被创建，此时它处于 uncompleted 状态——非失败、非成功、非取消，因为 I/O 操作此时还没有完成。一旦 I/O 操作完成，ChannelFuture 将会被设置成 completed
+  在 Netty 中，所有的 I/O 操作都是异步的，这意味着任何 I/O 调用都会立即返回，而不是像传统 BIO 那样同步等待操作完成。异步操作会带来一个问题：调用者如何获取异步操作的结果？ChannelFuture 就是为了解决这个问题而专门设计的。下面我们一起看它的原理。ChannelFuture 有两种状态：uncompleted 和 completed。当开始一个 I/O 操作时，一个新的 ChannelFuture 被创建，此时它处于 uncompleted 状态——非失败、非成功、非取消，因为 I/O 操作此时还没有完成。一旦 I/O 操作完成，ChannelFuture 将会被设置成 completed
 
-
+  
 
 备注：由于Netty中的Future都是异步IO操作，结果是未知的，因此命名为ChannelFuture，表示跟Channel的操作有关。Netty强烈建议直接通过添加监听器的方式获取IO结果，而不是通过同步等待的方式。如果用户操作调用了sync或者await方法，会在对应的future对象上阻塞用户线程，例如future.channel().closeFuture().sync()
 
@@ -238,7 +238,7 @@ final ChannelFuture f = ctx.writeAndFlush(time); // (3)
 
 **几个组件的关系图：**
 
-![img](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\2)
+![img](https://github.com/Keifer-NJU/netty/blob/master/assert/2)
 
 ### 4.线程处理模型
 
@@ -246,7 +246,7 @@ final ChannelFuture f = ctx.writeAndFlush(time); // (3)
   - 串行处理模型
   - 并行处理模型
   - Netty线程处理模型
-  - ![img](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\157ccb40c65f4c118876221d7c61e7ac~tplv-k3u1fbpfcp-watermark.image)
+  - ![img](https://github.com/Keifer-NJU/netty/blob/master/assert/157ccb40c65f4c118876221d7c61e7ac~tplv-k3u1fbpfcp-watermark.image)
   - 这上面有几个注意的地方，这里我简单的进行分析。首先是关于NioEventLoop和NioEventLoopGroup的。NioEventLoop实际上就是工作线程，可以直接理解为一个线程。NioEventLoopGroup是一个线程池，线程池中的线程就是NioEventLoop。实际上bossGroup中有多个NioEventLoop线程，每个NioEventLoop绑定一个端口，也就是说，如果程序只需要监听1个端口的话，bossGroup里面只需要有一个NioEventLoop线程就行了。     每个NioEventLoop都绑定了一个Selector，所以在Netty的线程模型中，是由多个Selecotr在监听IO就绪事件。而Channel注册到Selector。     一个Channel绑定一个NioEventLoop，相当于一个连接绑定一个线程，这个连接所有的ChannelHandler都是在一个线程中执行的，避免了多线程干扰。更重要的是ChannelPipline链表必须严格按照顺序执行的。单线程的设计能够保证ChannelHandler的顺序执行。     一个NioEventLoop的selector可以被多个Channel注册，也就是说多个Channel共享一个EventLoop。EventLoop的Selecctor对这些Channel进行检查。
 - **[NIO之Reactor模式,Netty序章](https://segmentfault.com/a/1190000019469833)  **（帮助理解Reactor线程模型）
 
@@ -254,17 +254,17 @@ final ChannelFuture f = ctx.writeAndFlush(time); // (3)
 
 **Netty服务端创建流程**
 
-![The Architecture Diagram of Netty](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\lmt8euzs30.jpeg)
+![The Architecture Diagram of Netty](https://github.com/Keifer-NJU/netty/blob/master/assert/lmt8euzs30.jpeg)
 
 
 
 **Netty客户端创建流程**
 
-![The Architecture Diagram of Netty](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\0lu01vdxa9.jpeg)
+![The Architecture Diagram of Netty](https://github.com/Keifer-NJU/netty/blob/master/assert/0lu01vdxa9.jpeg)
 
 ### 6.入门使用例子
 
-![image.png](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\cc27d56addd74e82b6b6b349c7f3769b.png)
+![image.png](https://github.com/Keifer-NJU/netty/blob/master/assert/cc27d56addd74e82b6b6b349c7f3769b.png)
 
 #### 6.1传输实体类
 
@@ -623,9 +623,9 @@ public class ServerMain {
 }
 ```
 
-![image-20210311103241886](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\image-20210311103241886.png)
+![image-20210311103241886](https://github.com/Keifer-NJU/netty/blob/master/assert/image-20210311103241886.png)
 
-![image-20210311103312548](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\image-20210311103312548.png)
+![image-20210311103312548](https://github.com/Keifer-NJU/netty/blob/master/assert/image-20210311103312548.png)
 
 本节 Over!
 
