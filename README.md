@@ -33,7 +33,7 @@
 
 ### 2.Architectural Overview
 
-![The Architecture Diagram of Netty](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\architecture.png)
+![The Architecture Diagram of Netty](.\assert\architecture.png)
 
 1. **丰富的缓冲架构**（ Rich Buffer Data Structure）
 
@@ -129,29 +129,29 @@
 
 ### 3.核心类
 
-#### EventLoop  & EventLoopGroup
+- #### EventLoop  & EventLoopGroup
 
-EventLoopGroup可以理解为线程池，EventLoop理解为一个线程，每个EventLoop对应一个Selector，负责处理多个Channel上的事件。
+  EventLoopGroup可以理解为线程池，EventLoop理解为一个线程，每个EventLoop对应一个Selector，负责处理多个Channel上的事件。
 
-这是Netty处理事件的核心机制。上面我使用了**EventLoopGroup**。我们在NIO中通常要做的几件事情，如注册感兴趣的事件、调度相应的Handler等，都是**EventLoop**负责。Channel、EventLoop、Thread以及EventLoopGroup 之间的关系可以用如下图表示：
+  这是Netty处理事件的核心机制。上面我使用了**EventLoopGroup**。我们在NIO中通常要做的几件事情，如注册感兴趣的事件、调度相应的Handler等，都是**EventLoop**负责。Channel、EventLoop、Thread以及EventLoopGroup 之间的关系可以用如下图表示：
 
-![img](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\1)
+  ![img](D:\OneDriver_edu\OneDrive - smail.nju.edu.cn\Java\MarkDown_AE86\Netty\assert\1)
 
-一个 EventLoopGroup 包含一个或多个 EventLoop ，即 EventLoopGroup : EventLoop = 1 : n 。
+  一个 EventLoopGroup 包含一个或多个 EventLoop ，即 EventLoopGroup : EventLoop = 1 : n 。
 
-一个 EventLoop 在它的生命周期内，只能与一个 Thread 绑定，即 EventLoop : Thread = 1 : 1 。
+  一个 EventLoop 在它的生命周期内，只能与一个 Thread 绑定，即 EventLoop : Thread = 1 : 1 。
 
-所有有 EventLoop 处理的 I/O 事件都将在它**专有**的 Thread 上被处理，从而保证线程安全，即 Thread : EventLoop = 1 : 1。
+  所有有 EventLoop 处理的 I/O 事件都将在它**专有**的 Thread 上被处理，从而保证线程安全，即 Thread : EventLoop = 1 : 1。
 
-一个 Channel 在它的生命周期内只能注册到一个 EventLoop 上，即 Channel : EventLoop = n : 1 。
+  一个 Channel 在它的生命周期内只能注册到一个 EventLoop 上，即 Channel : EventLoop = n : 1 。
 
-一个 EventLoop 可被分配至一个或多个 Channel ，即 EventLoop : Channel = 1 : n 。
+  一个 EventLoop 可被分配至一个或多个 Channel ，即 EventLoop : Channel = 1 : n 。
 
-当一个连接到达时，Netty 就会创建一个 Channel，然后从 EventLoopGroup 中分配一个 EventLoop 来给这个 Channel 绑定上，在该 Channel 的整个生命周期中都是有这个绑定的 EventLoop 来服务的。
+  当一个连接到达时，Netty 就会创建一个 Channel，然后从 EventLoopGroup 中分配一个 EventLoop 来给这个 Channel 绑定上，在该 Channel 的整个生命周期中都是有这个绑定的 EventLoop 来服务的。
 
-#### NioEventLoopGroup
+- #### NioEventLoopGroup
 
-是一个处理I/O操作的多线程事件循环。Netty为不同类型的传输提供了各种EventLoopGroup实现。在本例中，我们将实现一个服务器端应用程序，因此将使用两个NioEventLoopGroup。第一个通常被称为“boss”，它接受一个传入的连接。第二个，通常称为“worker”，在“boss"接受连接并将接受的连接注册到worker之后，处理已接受连接的流量。使用多少线程以及如何将它们映射到创建的通道取决于EventLoopGroup实现，甚至可以通过构造函数进行配置。
+  是一个处理I/O操作的多线程事件循环。Netty为不同类型的传输提供了各种EventLoopGroup实现。在本例中，我们将实现一个服务器端应用程序，因此将使用两个NioEventLoopGroup。第一个通常被称为“boss”，它接受一个传入的连接。第二个，通常称为“worker”，在“boss"接受连接并将接受的连接注册到worker之后，处理已接受连接的流量。使用多少线程以及如何将它们映射到创建的通道取决于EventLoopGroup实现，甚至可以通过构造函数进行配置。
 
 #### ServerBootstrap
 
